@@ -19,6 +19,8 @@ const canBuy = async () => {
     // check current price
 
     const quoteAmountOut = await quote();
+    console.log('Current quote => ', quoteAmountOut)
+    console.log('Minimum expected => ', CurrentConfig.tokens.minAmountOut);
     return quoteAmountOut >= CurrentConfig.tokens.minAmountOut
 };
 
