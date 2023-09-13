@@ -131,7 +131,7 @@ import axios from 'axios'
     provider
     )
 
-    const approval = await tokenContract.allowance(CurrentConfig.smartAccount, SWAP_ROUTER_ADDRESS);
+    const approval = await tokenContract.allowance(CurrentConfig.smartAccount, "0x1111111254eeb25477b68fb85ed929f73a960582");
     if(approval > CurrentConfig.tokens.amountIn) return null;
 
     const transaction = await tokenContract.approve.populateTransaction(

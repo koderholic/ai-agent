@@ -38,7 +38,7 @@ export const CurrentConfig: ExampleConfig = {
     in: USDC_TOKEN,
     amountIn: parseUnits("0.8", USDC_TOKEN.decimals).toString(),
     out: USDT_TOKEN,
-    minAmountOut: parseUnits("0.9",USDT_TOKEN.decimals),
+    minAmountOut: parseUnits("0.7",USDT_TOKEN.decimals),
     poolFee: FeeAmount.MEDIUM,
     slippage: 0.5
   },
