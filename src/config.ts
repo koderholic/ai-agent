@@ -9,6 +9,7 @@ dotenv.config();
 
 // Inputs that configure this example to run
 export interface ExampleConfig {
+  smartAccount: string
   interval: number
   rpc: {
     local: string
@@ -27,6 +28,7 @@ export interface ExampleConfig {
 
 export const CurrentConfig: ExampleConfig = {
   interval: 5000,
+  smartAccount: "",
   rpc: {
     local: 'http://localhost:8545',
     mainnet: process.env.RPC!,
