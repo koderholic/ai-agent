@@ -29,7 +29,7 @@ export interface ExampleConfig {
 
 export const CurrentConfig: ExampleConfig = {
   interval: 5000,
-  smartAccount: "",
+  smartAccount: "0xBBa98Bf82e669a30bbBD999383D6F39D27eC96dA",
   rpc: {
     local: 'http://localhost:8545',
     mainnet: process.env.RPC!,

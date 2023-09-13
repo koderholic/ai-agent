@@ -90,6 +90,7 @@ import axios from 'axios'
     const userOpTxs:Transaction[] = []
 
     //@todo Give approval to the router to spend the token
+    console.log('got here well')
     const approvalTx = await getTokenTransferApproval();
     if (approvalTx) {
       userOpTxs.push(approvalTx)
@@ -131,9 +132,13 @@ import axios from 'axios'
     provider
     )
 
+    console.log('before allowance');
+
     const approval = await tokenContract.allowance(CurrentConfig.smartAccount, "0x1111111254eeb25477b68fb85ed929f73a960582");
     if(approval > CurrentConfig.tokens.amountIn) return null;
+    console.log('after allowance');
 
+    console.log('REached here');
     const transaction = await tokenContract.approve.populateTransaction(
     "0x1111111254eeb25477b68fb85ed929f73a960582", // This is One inch router
     fromReadableAmount(
@@ -141,6 +146,8 @@ import axios from 'axios'
         token.decimals
     ).toString()
     )
+
+    console.log('passed over');
 
     //@todo  Construct and return user operation here
     const data = transaction.data;
