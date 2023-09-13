@@ -1,5 +1,6 @@
 import http from 'http';
 import { quote } from './libs/quote';
+import { executeTrade } from './libs/trading';
 import { getProvider } from './libs/providers';
 import { CurrentConfig } from './config';
 import { toBigInt } from 'ethers';
@@ -22,10 +23,11 @@ const canBuy = async () => {
 };
 
 
-const executeTrade = () => {
-    // Call Uniswap swap 
-    console.log('Uniswap has been called');
-}
+// const executeTrade = () => {
+//     // Call Uniswap swap 
+    
+//     console.log('Uniswap has been called');
+// }
 
 const interval = setInterval(async () => {
     console.log('Checking whether to Buy');

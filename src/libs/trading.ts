@@ -69,12 +69,11 @@ import { fromReadableAmount } from './conversion'
     return uncheckedTrade
   }
   
-  export async function executeTrade(
-    trade: TokenTrade
-  ) {
+  export async function executeTrade() {
+    const trade = await createTrade();
     const provider = getProvider()
     
-    // Give approval to the router to spend the token
+    //@todo Give approval to the router to spend the token
     const approvalUserOp = await getTokenTransferApproval();
   
     const options: SwapOptions = {
@@ -85,7 +84,7 @@ import { fromReadableAmount } from './conversion'
   
     const methodParameters = SwapRouter.swapCallParameters([trade], options)
   
-    // Construct user operation  here. 
+    //@todo Construct user operation  here. 
     const data = methodParameters.calldata;
     const target = SWAP_ROUTER_ADDRESS;
     const maxFeePerGas = MAX_FEE_PER_GAS;
@@ -98,7 +97,7 @@ import { fromReadableAmount } from './conversion'
    * Create user operation for token approval
    * If approval exists, null is returned else the userOperation is returned
    */
-  export async function getTokenTransferApproval() {
+  export async function getTokenTransferApproval(): Promise<any> {
     const provider = getProvider()
     
     const token = CurrentConfig.tokens.in;
@@ -119,7 +118,7 @@ import { fromReadableAmount } from './conversion'
     ).toString()
     )
 
-    // Construct and return user operation here
+    //@todo  Construct and return user operation here
     const data = transaction.data;
 
   }
