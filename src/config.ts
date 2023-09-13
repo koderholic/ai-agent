@@ -17,10 +17,11 @@ export interface ExampleConfig {
   }
   tokens: {
     in: Token
-    amountIn: number
+    amountIn: string
     out: Token
     minAmountOut: BigInt
-    poolFee: number
+    poolFee: number,
+    slippage: number
   }
 }
 
@@ -35,9 +36,10 @@ export const CurrentConfig: ExampleConfig = {
   },
   tokens: {
     in: USDC_TOKEN,
-    amountIn: 0.8,
+    amountIn: parseUnits("0.8", USDC_TOKEN.decimals).toString(),
     out: USDT_TOKEN,
-    minAmountOut: parseUnits("0.7",USDT_TOKEN.decimals),
+    minAmountOut: parseUnits("0.9",USDT_TOKEN.decimals),
     poolFee: FeeAmount.MEDIUM,
+    slippage: 0.5
   },
 }

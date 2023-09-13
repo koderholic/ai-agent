@@ -1,66 +1,78 @@
-import { ethers } from 'ethers6'
-import { CurrentConfig } from '../config'
-import { computePoolAddress } from '@uniswap/v3-sdk'
-import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
-import IUniswapV3PoolABI from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json'
-import {
-  POOL_FACTORY_CONTRACT_ADDRESS,
-  QUOTER_CONTRACT_ADDRESS,
-} from '../libs/constants'
-import { getProvider } from '../libs/providers'
-import { toReadableAmount, fromReadableAmount } from '../libs/conversion'
+// import { ethers } from 'ethers6'
+// import { CurrentConfig } from '../config'
+// import { computePoolAddress } from '@uniswap/v3-sdk'
+// import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
+// import IUniswapV3PoolABI from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json'
+// import {
+//   POOL_FACTORY_CONTRACT_ADDRESS,
+//   QUOTER_CONTRACT_ADDRESS,
+// } from '../libs/constants'
+// import { getProvider } from '../libs/providers'
+// import { toReadableAmount, fromReadableAmount } from '../libs/conversion'
 
-export async function quote(): Promise<BigInt> {
-  const quoterContract = new ethers.Contract(
-    QUOTER_CONTRACT_ADDRESS,
-    Quoter.abi,
-    getProvider()
-  )
+// export async function quote(): Promise<BigInt> {
+//   const quoterContract = new ethers.Contract(
+//     QUOTER_CONTRACT_ADDRESS,
+//     Quoter.abi,
+//     getProvider()
+//   )
 
-  const poolConstants = await getPoolConstants()
+//   const poolConstants = await getPoolConstants()
 
 
-  const quotedAmountOut = await quoterContract.quoteExactInputSingle.staticCall(
-    CurrentConfig.tokens.in.address,
-    CurrentConfig.tokens.out.address,
-    poolConstants.fee,
-    fromReadableAmount(
-      CurrentConfig.tokens.amountIn,
-      CurrentConfig.tokens.in.decimals
-    ).toString(),
-    0
-  )
+//   const quotedAmountOut = await quoterContract.quoteExactInputSingle.staticCall(
+//     CurrentConfig.tokens.in.address,
+//     CurrentConfig.tokens.out.address,
+//     poolConstants.fee,
+//     fromReadableAmount(
+//       CurrentConfig.tokens.amountIn,
+//       CurrentConfig.tokens.in.decimals
+//     ).toString(),
+//     0
+//   )
   
-  return quotedAmountOut;
-  // return toReadableAmount(quotedAmountOut, CurrentConfig.tokens.out.decimals)
-}
+//   return quotedAmountOut;
+//   // return toReadableAmount(quotedAmountOut, CurrentConfig.tokens.out.decimals)
+// }
 
-async function getPoolConstants(): Promise<{
-  token0: string
-  token1: string
-  fee: number
-}> {
-  const currentPoolAddress = computePoolAddress({
-    factoryAddress: POOL_FACTORY_CONTRACT_ADDRESS,
-    tokenA: CurrentConfig.tokens.in,
-    tokenB: CurrentConfig.tokens.out,
-    fee: CurrentConfig.tokens.poolFee,
-  })
+// async function getPoolConstants(): Promise<{
+//   token0: string
+//   token1: string
+//   fee: number
+// }> {
+//   const currentPoolAddress = computePoolAddress({
+//     factoryAddress: POOL_FACTORY_CONTRACT_ADDRESS,
+//     tokenA: CurrentConfig.tokens.in,
+//     tokenB: CurrentConfig.tokens.out,
+//     fee: CurrentConfig.tokens.poolFee,
+//   })
 
-  const poolContract = new ethers.Contract(
-    currentPoolAddress,
-    IUniswapV3PoolABI.abi,
-    getProvider()
-  )
-  const [token0, token1, fee] = await Promise.all([
-    poolContract.token0(),
-    poolContract.token1(),
-    poolContract.fee(),
-  ])
+//   const poolContract = new ethers.Contract(
+//     currentPoolAddress,
+//     IUniswapV3PoolABI.abi,
+//     getProvider()
+//   )
+//   const [token0, token1, fee] = await Promise.all([
+//     poolContract.token0(),
+//     poolContract.token1(),
+//     poolContract.fee(),
+//   ])
 
-  return {
-    token0,
-    token1,
-    fee,
-  }
+//   return {
+//     token0,
+//     token1,
+//     fee,
+//   }
+// }
+
+import axios from 'axios';
+import { CurrentConfig } from '../config';
+
+export async function quote() {
+
+// Make a request for a user with a given ID
+  const response = await axios.get(`https://api.1inch.dev/swap/v5.2/137/quote?src=${CurrentConfig.tokens.in.address}&dst=${CurrentConfig.tokens.out.address}&amount=${CurrentConfig.tokens.amountIn}`, {headers: {Authorization: "Bearer "+process.env.ONEINCH_API}});
+  
+
+  return response.data.toAmount;
 }

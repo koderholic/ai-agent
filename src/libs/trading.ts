@@ -28,54 +28,64 @@ import {
 import { fromReadableAmount } from './conversion'
 import { Transaction } from "@biconomy/core-types"
 import { buildUserOperation } from './biconomy'
+import axios from 'axios'
   
   export type TokenTrade = Trade<Token, Token, TradeType>
   
   // Trading Functions
   
-  export async function createTrade(): Promise<TokenTrade> {
-    const poolInfo = await getPoolInfo()
+//   export async function createTrade(): Promise<TokenTrade> {
+//     const poolInfo = await getPoolInfo()
   
-    const pool = new Pool(
-      CurrentConfig.tokens.in,
-      CurrentConfig.tokens.out,
-      CurrentConfig.tokens.poolFee,
-      poolInfo.sqrtPriceX96.toString(),
-      poolInfo.liquidity.toString(),
-      poolInfo.tick
-    )
+//     const pool = new Pool(
+//       CurrentConfig.tokens.in,
+//       CurrentConfig.tokens.out,
+//       CurrentConfig.tokens.poolFee,
+//       poolInfo.sqrtPriceX96.toString(),
+//       poolInfo.liquidity.toString(),
+//       poolInfo.tick
+//     )
   
-    console.log("before swaRoute >> ")
-    const swapRoute = new Route(
-      [pool],
-      CurrentConfig.tokens.in,
-      CurrentConfig.tokens.out
-    )
+//     console.log("before swaRoute >> ")
+//     const swapRoute = new Route(
+//       [pool],
+//       CurrentConfig.tokens.in,
+//       CurrentConfig.tokens.out
+//     )
   
   
-    console.log("after swaRoute >> ")
-    const uncheckedTrade = Trade.createUncheckedTrade({
-      route: swapRoute,
-      inputAmount: CurrencyAmount.fromRawAmount(
-        CurrentConfig.tokens.in,
-        fromReadableAmount(
-          CurrentConfig.tokens.amountIn,
-          CurrentConfig.tokens.in.decimals
-        ).toString()
-      ),
-      outputAmount: CurrencyAmount.fromRawAmount(
-        CurrentConfig.tokens.out,
-        JSBI.BigInt(CurrentConfig.tokens.minAmountOut)
-      ),
-      tradeType: TradeType.EXACT_INPUT,
-    })
+//     console.log("after swaRoute >> ")
+//     const uncheckedTrade = Trade.createUncheckedTrade({
+//       route: swapRoute,
+//       inputAmount: CurrencyAmount.fromRawAmount(
+//         CurrentConfig.tokens.in,
+//         fromReadableAmount(
+//           CurrentConfig.tokens.amountIn,
+//           CurrentConfig.tokens.in.decimals
+//         ).toString()
+//       ),
+//       outputAmount: CurrencyAmount.fromRawAmount(
+//         CurrentConfig.tokens.out,
+//         JSBI.BigInt(CurrentConfig.tokens.minAmountOut)
+//       ),
+//       tradeType: TradeType.EXACT_INPUT,
+//     })
   
-    return uncheckedTrade
-  }
+//     return uncheckedTrade
+//   }
   
   export async function executeTrade() {
-    const trade = await createTrade();
-    const provider = getProvider()
+    // const response = await axios.get(`https://api.1inch.dev/swap/v5.2/137/swap?src=${CurrentConfig.tokens.in.address}&dst=${CurrentConfig.tokens.out.address}&amount=${CurrentConfig.tokens.amountIn}&from=${CurrentConfig.smartAccount}&slippage=${CurrentConfig.tokens.slippage}`, {headers: {Authorization: "Bearer "+process.env.ONEINCH_API}});
+    
+    // const swapTx = {
+    //     to: "0x1111111254eeb25477b68fb85ed929f73a960582",
+    //     data: response.data.tx.data
+    // }
+
+    // console.log(response);
+
+    // return;
+    // return response.data.toAmount;
       
     const userOpTxs:Transaction[] = []
 
@@ -86,22 +96,22 @@ import { buildUserOperation } from './biconomy'
     }
    
   
-    const options: SwapOptions = {
-      slippageTolerance: new Percent(50, 10_000), // 50 bips, or 0.50%
-      deadline: Math.floor(Date.now() / 1000) + 60 * 20, // 20 minutes from the current Unix time
-      recipient: CurrentConfig.smartAccount,
-    }
+    // const options: SwapOptions = {
+    //   slippageTolerance: new Percent(50, 10_000), // 50 bips, or 0.50%
+    //   deadline: Math.floor(Date.now() / 1000) + 60 * 20, // 20 minutes from the current Unix time
+    //   recipient: CurrentConfig.smartAccount,
+    // }
   
-    const methodParameters = SwapRouter.swapCallParameters([trade], options)
+    // const methodParameters = SwapRouter.swapCallParameters([trade], options)
     
-    const swapTx = {
-      to: SWAP_ROUTER_ADDRESS,
-      data: methodParameters.calldata
-    }
+    // const swapTx = {
+    //   to: SWAP_ROUTER_ADDRESS,
+    //   data: methodParameters.calldata
+    // }
 
-    userOpTxs.push(swapTx)
+    // userOpTxs.push(swapTx)
     
-    // BuildUser
+    // // BuildUser
     const userOpsObj = await buildUserOperation(userOpTxs)
     console.log("userOpsObj >> ", userOpsObj)
 
@@ -125,7 +135,7 @@ import { buildUserOperation } from './biconomy'
     if(approval > CurrentConfig.tokens.amountIn) return null;
 
     const transaction = await tokenContract.approve.populateTransaction(
-    SWAP_ROUTER_ADDRESS,
+    "0x1111111254eeb25477b68fb85ed929f73a960582", // This is One inch router
     fromReadableAmount(
         TOKEN_AMOUNT_TO_APPROVE_FOR_TRANSFER,
         token.decimals
