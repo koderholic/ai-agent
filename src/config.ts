@@ -3,6 +3,10 @@ import { FeeAmount } from '@uniswap/v3-sdk'
 import { USDC_TOKEN, WMATIC_TOKEN } from './libs/constants'
 import { parseUnits } from 'ethers'
 
+import * as dotenv from 'dotenv';
+
+dotenv.config();
+
 // Inputs that configure this example to run
 export interface ExampleConfig {
   interval: number
@@ -25,7 +29,7 @@ export const CurrentConfig: ExampleConfig = {
   interval: 5000,
   rpc: {
     local: 'http://localhost:8545',
-    mainnet: 'https://polygon-rpc.com/',
+    mainnet: process.env.RPC!,
   },
   tokens: {
     in: USDC_TOKEN,
