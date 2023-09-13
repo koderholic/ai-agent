@@ -3,7 +3,7 @@ import { quote } from './libs/quote';
 import { executeTrade } from './libs/trading';
 import { getProvider } from './libs/providers';
 import { CurrentConfig } from './config';
-import { toBigInt } from 'ethers';
+import { toBigInt } from 'ethers6';
  
 const hostname = '127.0.0.1';
 const port = 3001;

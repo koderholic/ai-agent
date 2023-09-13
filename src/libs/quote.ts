@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import { ethers } from 'ethers6'
 import { CurrentConfig } from '../config'
 import { computePoolAddress } from '@uniswap/v3-sdk'
 import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'

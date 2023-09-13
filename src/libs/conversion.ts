@@ -1,4 +1,4 @@
-import { BigNumberish, ethers, formatUnits, parseUnits } from 'ethers'
+import { BigNumberish, ethers, formatUnits, parseUnits } from 'ethers6'
 
 const READABLE_FORM_LEN = 4
 

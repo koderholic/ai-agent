@@ -12,10 +12,10 @@ export const QUOTER_CONTRACT_ADDRESS =
 
 // Currencies and Tokens
 
-export const WMATIC_TOKEN = new Token(
+export const USDT_TOKEN = new Token(
   SUPPORTED_CHAINS[5],
-  '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
-  18
+  '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+  6
 )
 
 export const USDC_TOKEN = new Token(

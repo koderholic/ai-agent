@@ -11,7 +11,7 @@ import {
     SwapRouter,
     Trade,
   } from '@uniswap/v3-sdk'
-  import { ethers } from 'ethers'
+  import { ethers } from 'ethers6'
   import JSBI from 'jsbi'
 
   import { CurrentConfig } from '../config'
@@ -26,6 +26,8 @@ import {
     getProvider,
   } from './providers'
 import { fromReadableAmount } from './conversion'
+import { Transaction } from "@biconomy/core-types"
+import { buildUserOperation } from './biconomy'
   
   export type TokenTrade = Trade<Token, Token, TradeType>
   
@@ -43,6 +45,7 @@ import { fromReadableAmount } from './conversion'
       poolInfo.tick
     )
   
+    console.log("before swaRoute >> ")
     const swapRoute = new Route(
       [pool],
       CurrentConfig.tokens.in,
@@ -50,6 +53,7 @@ import { fromReadableAmount } from './conversion'
     )
   
   
+    console.log("after swaRoute >> ")
     const uncheckedTrade = Trade.createUncheckedTrade({
       route: swapRoute,
       inputAmount: CurrencyAmount.fromRawAmount(
@@ -72,9 +76,15 @@ import { fromReadableAmount } from './conversion'
   export async function executeTrade() {
     const trade = await createTrade();
     const provider = getProvider()
-    
+      
+    const userOpTxs:Transaction[] = []
+
     //@todo Give approval to the router to spend the token
-    const approvalUserOp = await getTokenTransferApproval();
+    const approvalTx = await getTokenTransferApproval();
+    if (approvalTx) {
+      userOpTxs.push(approvalTx)
+    }
+   
   
     const options: SwapOptions = {
       slippageTolerance: new Percent(50, 10_000), // 50 bips, or 0.50%
@@ -83,15 +93,19 @@ import { fromReadableAmount } from './conversion'
     }
   
     const methodParameters = SwapRouter.swapCallParameters([trade], options)
-  
-    //@todo Construct user operation  here. 
-    const data = methodParameters.calldata;
-    const target = SWAP_ROUTER_ADDRESS;
-    const maxFeePerGas = MAX_FEE_PER_GAS;
-    const maxPriorityFeePerGas = MAX_PRIORITY_FEE_PER_GAS;
+    
+    const swapTx = {
+      to: SWAP_ROUTER_ADDRESS,
+      data: methodParameters.calldata
+    }
+
+    userOpTxs.push(swapTx)
+    
+    // BuildUser
+    const userOpsObj = await buildUserOperation(userOpTxs)
+    console.log("userOpsObj >> ", userOpsObj)
 
   }
-  
   
   /**
    * Create user operation for token approval
@@ -120,5 +134,10 @@ import { fromReadableAmount } from './conversion'
 
     //@todo  Construct and return user operation here
     const data = transaction.data;
+
+    return {
+      to:token.address,
+      data
+    }
 
   }

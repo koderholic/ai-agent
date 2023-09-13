@@ -1,7 +1,7 @@
 import { Token } from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
-import { USDC_TOKEN, WMATIC_TOKEN } from './libs/constants'
-import { parseUnits } from 'ethers'
+import { USDC_TOKEN, USDT_TOKEN } from './libs/constants'
+import { parseUnits } from 'ethers6'
 
 import * as dotenv from 'dotenv';
 
@@ -35,9 +35,9 @@ export const CurrentConfig: ExampleConfig = {
   },
   tokens: {
     in: USDC_TOKEN,
-    amountIn: 1,
-    out: WMATIC_TOKEN,
-    minAmountOut: parseUnits("1.94",WMATIC_TOKEN.decimals),
+    amountIn: 0.8,
+    out: USDT_TOKEN,
+    minAmountOut: parseUnits("0.7",USDT_TOKEN.decimals),
     poolFee: FeeAmount.MEDIUM,
   },
 }
