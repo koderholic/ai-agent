@@ -1,22 +1,24 @@
-const http = require('http');
+import http from 'http';
+import { quote } from './libs/quote';
+import { getProvider } from './libs/providers';
+import { CurrentConfig } from './config';
+import { toBigInt } from 'ethers';
  
 const hostname = '127.0.0.1';
 const port = 3001;
  
 /*
-  This AI Agent buys Ether for the user once the price is atmost the preferredBuyPrice 
+  This AI Agent swaps USDC for WMATIC for the user once the users buy condition(see config) is met
   Only Uniswap protocol is used to executes purchase
   Only one purchase action happens for this task.
-  tradeAmount: How much USDC to trade for Ether. 
 */
-const preferredBuyPrice = 1600; 
-const tradeAmount = 1;
 
-const canBuy = () => {
+
+const canBuy = async () => {
     // check current price
-    const currentBuyPrice = 1500;
 
-    return currentBuyPrice <= preferredBuyPrice
+    const quoteAmountOut = await quote();
+    return quoteAmountOut >= CurrentConfig.tokens.minAmountOut
 };
 
 
@@ -25,16 +27,16 @@ const executeTrade = () => {
     console.log('Uniswap has been called');
 }
 
-const interval = setInterval(() => {
+const interval = setInterval(async () => {
     console.log('Checking whether to Buy');
-    if(canBuy()) {
+    if(await canBuy()) {
         console.log('....Conditions Met....');
         executeTrade();
         clearInterval(interval);
     }else{
         console.log('...Oh no! Conditions not met')
     }
-}, 1000);
+}, CurrentConfig.interval);
 
 
 const server = http.createServer((req, res) => {

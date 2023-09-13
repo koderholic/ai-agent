@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "@uniswap/sdk-core": "^4.0.7",
+    "@uniswap/v3-sdk": "^3.10.0",
+    "ethers": "^6.7.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  },
+  "scripts": {
+    "compile": "tsc",
+    "start": "node build/app.js"
+  }
+}
